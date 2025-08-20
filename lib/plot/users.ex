@@ -27,6 +27,12 @@ defmodule Plot.Users do
     |> delete_change(:password)
   end
 
+  def login_changeset(user, attrs) do
+  user
+  |> cast(attrs, [:email, :password])
+  |> validate_required([:email, :password])
+end
+
     def authenticate_user(email, password) do
       case Repo.get_by(__MODULE__, email: email) do
         nil -> {:error, :not_found}

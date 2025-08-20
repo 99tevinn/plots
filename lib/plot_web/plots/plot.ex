@@ -7,6 +7,7 @@ defmodule PlotWeb.Plots.Plot do
   def mount(_params, _session, socket) do
     plot = %Plot{}
     changeset = Plot.changeset(plot, %{})
+    user_options = SavePlots.list_user_options()
 
     {:ok,
      socket
@@ -14,7 +15,8 @@ defmodule PlotWeb.Plots.Plot do
      |> assign(:changeset, changeset)
      |> assign(:form, to_form(changeset))
      |> assign(:plots, [])
-     |> assign(:live_action, :new)}
+     |> assign(:live_action, :new)
+     |> assign(:user_options, user_options)}
   end
 
   def handle_params(params, _uri, socket) do
@@ -58,14 +60,18 @@ defmodule PlotWeb.Plots.Plot do
   defp apply_action(socket, :new, _params) do
     plot = %Plot{}
     changeset = Plot.changeset(plot, %{})
+    user_options = SavePlots.list_user_options()
 
     socket
     |> assign(:plot, plot)
     |> assign(:changeset, changeset)
     |> assign(:form, to_form(changeset))
+    |> put_flash(:info, "Creating a new plot.")
+    |> assign(:user_options, user_options)
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    user_options = SavePlots.list_user_options()
     case SavePlots.get_plot(id) do
       nil ->
         socket
@@ -73,6 +79,7 @@ defmodule PlotWeb.Plots.Plot do
         |> assign(:plot, %Plot{})
         |> assign(:changeset, Plot.changeset(%Plot{}, %{}))
         |> assign(:form, to_form(Plot.changeset(%Plot{}, %{})))
+        |> assign(:user_options, user_options)
 
       plot ->
         changeset = Plot.changeset(plot, %{})
@@ -81,27 +88,36 @@ defmodule PlotWeb.Plots.Plot do
         |> assign(:plot, plot)
         |> assign(:changeset, changeset)
         |> assign(:form, to_form(changeset))
+        |> redirect(to: ~p"/plots/#{plot.id}/edit")
+        |> put_flash(:info, "Editing plot #{plot.id}")
     end
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
+    user_options = SavePlots.list_user_options()
     case SavePlots.get_plot(id) do
       nil ->
         socket
         |> put_flash(:error, "Plot not found.")
         |> assign(:plot, %Plot{})
+        |> assign(:changeset, Plot.changeset(%Plot{}, %{}))
+        |> assign(:form, to_form(Plot.changeset(%Plot{}, %{})))
+        |> assign(:user_options, user_options)
 
       plot ->
-        assign(socket, :plot, plot)
+        assign(socket, :plot, plot) |> redirect(to: ~p"/plots/#{plot.id}")
     end
   end
 
   defp apply_action(socket, :delete, %{"id" => id}) do
+    user_options = SavePlots.list_user_options()
     case SavePlots.delete_plot(id) do
       {:ok, _} ->
         socket
+        |> redirect(to: ~p"/plots/#{id}/delete")
         |> put_flash(:info, "Plot deleted successfully.")
         |> assign(:plot, %Plot{})
+        |> assign(:user_options, user_options)
 
       {:error, _} ->
         socket

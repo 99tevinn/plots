@@ -1,12 +1,12 @@
 <div id="plot-component">
-  <%= if @live_action in [:new, :edit] do %>
+  <%= if @user_options in [:new, :edit] do %>
     <.form
       for={@form}
       id="plot-form"
       as={:plot}
       phx-target={@myself}
       phx-change="validate"
-      phx-submit={@live_action == :edit && "update" || "save"}
+      phx-submit={@user_options == :edit && "update" || "save"}
     >
       <.input
         field={@form[:title]}
@@ -24,24 +24,24 @@
       />
       <.input
         field={@form[:user_id]}
-        type="textarea"
-        label="Data"
-        options={@user_options}
+        type="select"
+        label="User"
+        options={@user_select_options}
         required
       />
-      <.button><%= @live_action == :edit && "Update Plot" || "Save Plot" %></.button>
+      <.button><%= @user_options == :edit && "Update Plot" || "Save Plot" %></.button>
     </.form>
   <% end %>
 
-  <%= if @live_action == :show do %>
+  <%= if @user_options == :show do %>
     <div class="plot-details">
       <h2><%= @plot.title %></h2>
       <p><strong>Description:</strong> <%= @plot.description %></p>
-      <p><strong>Data:</strong> <%= @plot.user_id %></p>
+      <p><strong>User:</strong> <%= @plot.user.name %></p>
     </div>
   <% end %>
 
-  <%= if @live_action == :delete do %>
+  <%= if @user_options == :delete do %>
     <div class="confirm-delete">
       <p>Are you sure you want to delete "<%= @plot.title %>"?</p>
       <.button phx-click="delete" phx-target={@myself}>Delete Plot</.button>

@@ -21,6 +21,9 @@ defmodule PlotWeb.Users.User do
         changeset = Users.changeset(%Users{}, %{})
         {:ok, assign_form(socket, changeset)}
 
+      :logout ->
+        {:ok, redirect(socket, to: ~p"/users/login")}
+
       :show ->
         case SavePlots.get_user(params["id"]) do
           nil ->
@@ -28,7 +31,7 @@ defmodule PlotWeb.Users.User do
 
           user ->
             user = Repo.preload(user, :plots)
-            {:ok, assign(socket, user: user, plots: user.plots)}
+            {:ok, assign(socket, user: user, plots: user.plots) |> redirect(to: ~p"/users/#{user.id}")}
         end
       :edit ->
         case SavePlots.get_user(params["id"]) do
@@ -59,12 +62,16 @@ defmodule PlotWeb.Users.User do
           |> assign(:user, user)
           |> put_flash(:info, "Login successful.")
 
-        redirect_to = socket.assigns.redirect_to || ~p"/users/#{user.id}"
-        {:noreply, push_patch(socket, to: redirect_to)}
+        redirect_to = socket.assigns.redirect_to || ~p"/"
+        {:noreply, redirect(socket, to: redirect_to)}
 
       {:error, reason} ->
         {:noreply, put_flash(socket, :error, "Login failed: #{reason}")}
     end
+  end
+
+  def handle_event("logout", _params, socket) do
+    {:noreply, redirect(socket, to: ~p"/users/login")}
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do

@@ -19,6 +19,7 @@ defmodule PlotWeb.Router do
 
     get "/", PageController, :home
     live "/users/login", Users.User, :login
+    live "/users/logout", Users.User, :logout
     live "/users/:id/edit", Users.User, :edit
     live "/users/:id", Users.User, :show
     live "/plots/new", Plots.Plot, :new
