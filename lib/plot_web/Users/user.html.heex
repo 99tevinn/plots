@@ -1,0 +1,11 @@
+<.form
+  for={@form}
+  as={:user}
+  id="login-form"
+  phx-change="validate"
+  phx-submit="submit"
+>
+  <.input field={@form[:email]} label="Email" type="email" />
+  <.input field={@form[:password]} label="Password" type="password" />
+  <.button>Login</.button>
+</.form>

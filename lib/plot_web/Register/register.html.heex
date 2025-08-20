@@ -1,0 +1,16 @@
+<.form
+  for={@form}
+  as={:user}
+  phx-change="validate"
+  phx-submit="submit"
+>
+
+<.input field={@form[:name]} type="text" placeholder="Username" />
+<.input field={@form[:email]} type="email" placeholder="Email" />
+<.input field={@form[:password]} type="password" placeholder="Password" />
+
+<.button type="submit" class="w-full">
+  Register
+</.button>
+  
+</.form>
