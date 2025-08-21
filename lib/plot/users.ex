@@ -3,6 +3,8 @@ defmodule Plot.Users do
   alias Plot.Repo
   import Ecto.Changeset
 
+    @type t :: %__MODULE__{}
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true
@@ -28,10 +30,10 @@ defmodule Plot.Users do
   end
 
   def login_changeset(user, attrs) do
-  user
-  |> cast(attrs, [:email, :password])
-  |> validate_required([:email, :password])
-end
+    user
+    |> cast(attrs, [:email, :password])
+    |> validate_required([:email, :password])
+  end
 
     def authenticate_user(email, password) do
       case Repo.get_by(__MODULE__, email: email) do

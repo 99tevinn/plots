@@ -2,6 +2,8 @@ defmodule Plot.Plot do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{}
+
   schema "plots" do
     field :title, :string
     field :description, :string

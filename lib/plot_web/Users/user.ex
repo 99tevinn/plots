@@ -18,7 +18,7 @@ defmodule PlotWeb.Users.User do
 
     case socket.assigns.live_action do
       :login ->
-        changeset = Users.changeset(%Users{}, %{})
+        changeset = Users.login_changeset(%Users{}, %{})
         {:ok, assign_form(socket, changeset)}
 
       :logout ->
